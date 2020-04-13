@@ -65,6 +65,7 @@ function bindEvents(bot) {
         if (typeof bot.session != 'undefined') {
             updateTokens()
         }
+        console.log(bot.inventory);
     })
 
     bot.on('kicked', (reason, loggedIn) => {
@@ -87,7 +88,7 @@ function bindEvents(bot) {
     });
 
     bot.on('message', (jsonMsg) => {
-        console.log(jsonMsg)
+        //console.log(jsonMsg)
     })
 }
 
