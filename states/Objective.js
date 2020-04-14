@@ -1,10 +1,15 @@
 class Objective {
     constructor(callback) {
-        this.resolved = false;
+        this.callback = callback
+        this.resolved = false
+    }
+
+    isGoalReached() {
+        return false
     }
 
     resolve() {
-        callback()
+        this.callback()
     }
 }
 

@@ -1,6 +1,8 @@
 require('dotenv').config()
 const fs = require('fs')
 const mineflayer = require('mineflayer')
+import { StateMachine } from './states/StateMachine';
+
 const clientTokenFilename = '.clientToken'
 const accessTokenFilename = '.accessToken'
 
@@ -43,6 +45,7 @@ const currentState = {
 }
 
 let bot
+const stateMachine = new StateMachine()
 tryConnect();
 
 function tryConnect() {
@@ -59,37 +62,42 @@ function tryConnect() {
 }
 
 function bindEvents(bot) {
-    bot.once('login', () => {
-        bot.chat('hello world!')
-        console.log('joined')
-        if (typeof bot.session != 'undefined') {
-            updateTokens()
-        }
-        console.log(bot.inventory);
+    require('./utils/allEventNames').forEach((eventName) => {
+        bot.on(eventName, (...eventData) => stateMachine.pipeEvent(eventName, eventData))
     })
+    // bot.once('login', () => {
+    //     bot.chat('hello world!')
+    //     console.log('joined')
+    //     if (typeof bot.session != 'undefined') {
+    //         updateTokens()
+    //     }
+    //     console.log(bot.inventory);
+    // })
 
-    bot.on('kicked', (reason, loggedIn) => {
-        console.log(`I was kick for ${reason}`)
-        tryConnect();
-    })
+    // bot.on('kicked', (reason, loggedIn) => {
+    //     console.log(`I was kick for ${reason}`)
+    //     tryConnect();
+    // })
 
-    bot.on('end', () => {
-        //console.log(bot)
-        console.log('now disconnected')
-        if (typeof bot.session != 'undefined') {
-            updateTokens()
-        }
-    })
+    // bot.on('end', () => {
+    //     //console.log(bot)
+    //     console.log('now disconnected')
+    //     if (typeof bot.session != 'undefined') {
+    //         updateTokens()
+    //     }
+    // })
 
-    bot.on('chat', (username, message) => {
-        //console.log(username, message)
-        if (username === bot.username) return;
-        //bot.chat(message);
-    });
+    // bot.on('chat', (username, message) => {
+    //     //console.log(username, message)
+    //     if (username === bot.username) return;
+    //     //bot.chat(message);
+    // });
 
-    bot.on('message', (jsonMsg) => {
-        //console.log(jsonMsg)
-    })
+    // bot.on('message', (jsonMsg) => {
+    //     //console.log(jsonMsg)
+    // })
+
+    
 }
 
 function updateTokens() {
